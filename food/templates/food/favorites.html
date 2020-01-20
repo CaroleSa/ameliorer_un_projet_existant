@@ -1,0 +1,38 @@
+{% extends 'food/base.html' %}
+{% load static %}
+
+
+{% block link %}
+<!-- Import css file -->
+<link rel="stylesheet" href="{% static 'food/css/style.css' %}">
+{% endblock %}
+
+
+{% block content2 %}
+<h2 class="text-white">Mes aliments</h2>
+{% endblock %}
+
+
+{% block content %}
+<!-- About Section -->
+<section class="page-section bg-primary" id="about">
+  <div class="container">
+     <div class="row justify-content-around">
+        {% for food in data %}
+        <div id="delete{{ food.id }}">
+           <a href="{{ food.link }} ">
+              <img id="image"  src="{{ food.url_picture }}" alt="food image" height="196" width="196">
+           </a><br>
+           <div class="max-width"><p id="nameFood" class="text-center"> {{ food.name }}</p>
+           </div>
+           <div class="delete" id="{{ food.id }}">
+              <p class="text-center">
+                 <i id="delete" class="far fa-trash-alt"></i> Supprimer
+              </p>
+           </div>
+        </div>
+        {% endfor %}
+     </div>
+  </div>
+</section>
+{% endblock %}

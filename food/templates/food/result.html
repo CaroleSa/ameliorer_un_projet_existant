@@ -1,0 +1,71 @@
+{% extends 'food/base.html' %}
+{% load static %}
+
+
+{% block link %}
+<!-- Import css file -->
+<link rel="stylesheet" href="{% static 'food/css/style.css' %}">
+{% endblock %}
+
+
+{% block content2 %}
+<h2 class="text-white">Aliment recherché : {{ search }}</h2>
+{% endblock %}
+
+
+{% block content %}
+<!-- About Section -->
+<section class="page-section bg-primary" id="about">
+   <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h3 class="text-black mt-0">Vous pouvez remplacer cet aliment par :</h3>
+        </div>
+      </div>
+      <div class="row">
+        {% for food_data in foods_data %}
+          {% if food_data.name %}
+          <div class="result" id="{{ food_data.url_picture }}">
+              <form action="{% url 'food:detail' %}" method="post">{% csrf_token %}
+                <p>
+                  <input type="hidden" name="id_food" value="{{ food_data.id }}" />
+                  <input id="image" type="image" height="196" width="196" src="{{ food_data.url_picture }}" />
+                </p>
+              </form>
+              <div class="foreground">
+                <p id="nutriscore">{{ food_data.nutrition_grade }}</p>
+              </div>
+              <br><div class="max-width"><p id="nameFood" class="text-center">{{ food_data.name }}</p></div>
+              <div class="save" id="{{ food_data.id }}">
+                {% if food_data.id in favorites_id and authenticated == 'True' %}
+                {% elif authenticated == 'True' %}
+                <p class="text-center" >
+                    <i id="floppy" class="fas fa-save"></i> Sauvegarder
+                </p>
+                {% elif authenticated == 'False' %}
+                <a href="{% url 'account:access_account' %}"><p class="text-center" >
+                    <i id="floppy" class="fas fa-save"></i> Sauvegarder
+                </p></a>
+                {% endif %}
+             </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="pagination">
+        <span class="step-links" id="direction-pages"><br><br><br>
+            {% if foods_data.has_previous %}
+            <a href="?page=1">Retour page 1</a><br>
+            <a href="?page={{ foods_data.previous_page_number }}">&laquo; précédent&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</a>
+            {% endif %}
+            {% if foods_data.has_next %}
+            <a href="?page={{ foods_data.next_page_number }}">suivant &raquo;</a>
+            {% endif %}
+            <br><br><span class="current" id="pages">Page {{ foods_data.number }} sur {{ foods_data.paginator.num_pages }}
+            </span>
+        </span>
+      </div>
+   </div>
+</section>
+{% endblock %}

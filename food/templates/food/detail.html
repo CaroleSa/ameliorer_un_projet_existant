@@ -1,0 +1,50 @@
+{% extends 'food/base.html' %}
+{% load static %}
+
+
+{% block link %}
+<!-- Import css file -->
+<link rel="stylesheet" href="{% static 'food/css/style.css' %}">
+{% endblock %}
+
+
+{% block content2 %}
+<h2 class="text-white">{{ name }}</h2>
+{% endblock %}
+
+
+{% block content %}
+<!-- About Section -->
+<section class="page-section bg-primary" id="about">
+  <div class="container">
+    <div class="row justify-content-around detail" id="{{ url_picture }}">
+      <div class="col-lg-6 text-center">
+        <h4>Nutriscore</h4><br>
+        {% if nutrition_grade == "a" %}
+        <a><span class="medium">A </span>B C D E</a>
+        {% elif nutrition_grade == "b" %}
+        <a>A <span class="medium">B </span>C D E</a>
+        {% elif nutrition_grade == "c" %}
+        <a>A B <span class="medium">C </span>D E</a>
+        {% elif nutrition_grade == "d" %}
+        <a>A B C <span class="medium">D </span>E</a>
+        {% elif nutrition_grade == "e" %}
+        <a>A B C D<span class="medium">E </span></a>
+        {% endif %}
+        <br><br><br><br><a href='{{ link }}' target="_blank"><button>Voir la fiche d'OpenFoodFacts</button></a>
+      </div>
+      <div class="col-lg-6 text-left">
+        <h4> Repères nutritionnels pour 100g :</h4>
+        <ul>
+          <li>Energie : {{ energy }} KJ</li>
+          <li>Protéines : {{ proteins }} g</li>
+          <li>Lipides : {{ fat }} g</li>
+          <li>Glucides : {{ carbohydrates }} g<br>dont sucres : {{ sugars }} g</li>
+          <li>Fibres : {{ fiber }} g</li>
+          <li>Sel : {{ sodium }} g</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

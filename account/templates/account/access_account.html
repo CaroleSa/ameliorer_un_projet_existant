@@ -1,0 +1,33 @@
+{% extends 'food/base.html' %}
+{% load static %}
+
+{% block link %}
+<!-- Import css file -->
+<link rel="stylesheet" href="{% static 'food/css/style.css' %}">
+{% endblock %}
+
+{% block content2 %}
+<h2 class="text-white">M'identifier</h2>
+{% endblock %}
+
+{% block content %}
+<!-- About Section -->
+<section class="page-section bg-primary" id="about">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-4 text-center" id="form"><br>
+        <h4 class="text-black mt-0">Connexion utilisateur :</h4><br>
+        <form action="{% url 'account:access_account' %}" method="post">{% csrf_token %}
+          <label for="{{ form.email.id_for_label }}">{{ form.email }}<br>
+          <label for="{{ form.password.id_for_label }}">{{ form.password }}<br>
+          {% for elt in message %}
+            <p id="{{ color }}">{{ elt }}</p>
+          {% endfor %}
+          <input type="submit" value="M'identifier"><br><br>
+        </form>
+        <a href="{% url 'account:create_account' %}"><p class="small">Créer mon compte</p></a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'food/base.html' %}
+{% load static %}
+
+
+{% block content2 %}
+  <p class="text-white-75 font-weight-light mb-5">{{ message }}</p>
+  <h1 class="text-white">Du gras, oui, mais de qualité ! </h1>
+  <hr class="divider my-4">
+</div>
+  <div class="col-lg-8 align-self-baseline">
+    <h2 class="text-white-75 font-weight-light mb-5">Trouvez un produit de substitution pour ceux que vous consommez tous les jours.</h2>
+    <form action="{% url 'food:result' %}" method="post">{% csrf_token %}
+      <input type="text" class="js-scroll-trigger" id="productTextarea" placeholder="  Produit" name="search">
+      <input type="submit" onclick="location.href='{% url 'food:result' %}'" value="Chercher"/><br><br>
+    </form>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+<!-- About Section -->
+<section class="page-section bg-primary" id="about">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="text-black mt-0">Colette et Remy</h2>
+        <hr class="divider light my-4">
+        <p class="text-black mb-4">Pur Beurre est l'initiative de deux amoureux de la gastronomie française,
+          Colette Tatou et Rémy, que vous avez déjà certainement rencontrés dans notre excellent restaurant Ratatouille.
+        </p>
+        <div class="row justify-content-between">
+          <img class="col-lg-4 btn btn-light btn-xl js-scroll-trigger" src="{% static 'food/img/colette.png' %}" alt="image Colette">
+          <img class="col-lg-6 btn btn-light btn-xl js-scroll-trigger" src="{% static 'food/img/remy.png' %}" alt="image Remy">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="page-section" id="contact">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="mt-0">Contactez-nous !</h2>
+        <hr class="divider my-4">
+        <p class="text-muted mb-5">Besoin d'informations ?<br>Nous sommes joignables du lundi au samedi de 8h à 19h.</p>
+      </div>
+    </div>
+    <div class="row" id="ancre">
+      <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+        <i class="fas fa-phone fa-3x mb-3 text-muted"></i>
+        <div>+0 (000) 000-0000</div>
+      </div>
+      <div class="col-lg-4 mr-auto text-center">
+        <i class="fas fa-envelope fa-3x mb-3 text-muted"></i>
+        <!-- Make sure to change the email address in anchor text AND the link below! -->
+        <a class="d-block" href="mailto:contact@yourwebsite.com">purbeurre@purbeurre.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

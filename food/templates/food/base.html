@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>OC Projet 8</title>
+
+  <!-- Font Awesome Icons -->
+  <link href="{% static 'food/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+
+  <!-- Plugin CSS -->
+  <link href="{% static 'food/vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet">
+
+  <!-- Theme CSS - Includes Bootstrap -->
+  <link href="{% static 'food/css/creative.min.css' %}" rel="stylesheet">
+
+  <!-- Import css file -->
+  <link rel="stylesheet" href="{% static 'food/css/creative.css' %}">
+
+  <!-- Fonts -->
+  <link href="http://fonts.googleapis.com/css?family=Scope+One" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+
+  {% block link %}
+  {% endblock %}
+
+  <!-- Favicon logo -->
+  <link rel="icon" type="icon/png" href="{% static 'food/img/favicon.png' %}"/>
+
+</head>
+
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+    <div class="container">
+      <img src="{% static 'food/img/logo_purbeurre.png' %}" alt="logo Purbeurre">
+      <h1 class="navbar-brand js-scroll-trigger">&nbsp;&nbsp;PurBeurre</h1>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto my-2 my-lg-0 logoUl">
+          <li class="nav-item search">
+            <form action="{% url 'food:result' %}" method="post">{% csrf_token %}
+              <input type="text" id="searchTextarea" placeholder="  Chercher" name="search">
+            </form>
+          </li>
+
+          {% if authenticated == 'False' %}
+          <li class="nav-item logo" id="userLogoLi">
+            <a onmouseover="document.photo.src='{% static 'food/img/logo_user_black.png' %}'"
+            onmouseout="document.photo.src='{% static 'food/img/logo_user.png' %}'"
+            href="{% url 'account:access_account' %}" ><img class="center" src="{% static 'food/img/logo_user.png' %}" name="photo" alt="logo user"></a>
+            <p>M'identifier</p>
+          </li>
+          {% else %}
+          <li class="nav-item logo" id="userLogoLi">
+            <a onmouseover="document.photo.src='{% static 'food/img/logo_user_green2.png' %}'"
+            onmouseout="document.photo.src='{% static 'food/img/logo_user_green.png' %}'"
+            href="{% url 'account:my_account' %}" ><img class="center" src="{% static 'food/img/logo_user_green.png' %}" name="photo" alt="logo user"></a>
+            <p>Mon compte</p>
+          </li>
+          {% endif %}
+
+          <li class="nav-item logo" id="carrotLogoLi">
+            <a href="{% url 'food:favorites' %}" ><img class="center" id="carrotLogo" src="{% static 'food/img/logo_carrot.png' %}" alt="logo carrot"></a>
+            <p>Mes favoris</p>
+          </li>
+
+          <li class="nav-item logo">
+            <form action="{% url 'index' %}" method="post">{% csrf_token %}
+              <input type="hidden" name="disconnection" value="True" />
+              <input class="center" type="image" src="{% static 'food/img/logo_exit.png' %}" alt="logo exit" />
+            </form>
+            {% if authenticated == 'False' %}
+            <p>Accueil</p>
+            {% else %}
+            <p>Déconnexion</p>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- Masthead -->
+  <header class="masthead">
+
+    <div class="container h-100">
+      <div class="row h-100 align-items-center justify-content-center text-center">
+        <div class="col-lg-10 align-self-end">
+          {% block content2 %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+{% block content %}
+{% endblock %}
+
+
+<!-- Footer -->
+  <footer class="bg-light py-5">
+
+    <div class="container">
+      <div class="row justify-content-around">
+        <a href="{% url 'mentions_legal' %}" class="small text-white m-auto">Mentions légales</a>
+        <a href="{% url 'index' %}#ancre" class="small text-white m-auto">Contact</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'food/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'food/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="{% static 'food/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <script src="{% static 'food/vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="{% static 'food/js/creative.js' %}"></script>
+
+</body>
+
+</html>
