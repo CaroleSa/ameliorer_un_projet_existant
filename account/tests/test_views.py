@@ -30,7 +30,7 @@ class TestViews(TestCase):
 
         # try to get the user data
         try:
-            self.user.objects.get(id=self.id_user)
+            self.user.objects.get(id='3')
             data = True
         except self.user.DoesNotExist:
             data = False
