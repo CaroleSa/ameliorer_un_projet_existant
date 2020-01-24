@@ -28,17 +28,13 @@ class TestViews(TestCase):
             pass
         self.user.objects.create_user(id=self.id_user, username='Null', email=self.email, password=self.password)
 
-        # try to get the user data
-        try:
-            self.user.objects.get(id='3')
-            data = True
-        except self.user.DoesNotExist:
-            data = False
-        self.assertTrue(data)
-
-        try:
-            self.user.objects.get(id='5')
-            data = True
-        except self.user.DoesNotExist:
-            data = False
-        self.assertFalse(data)
+        # try to get the data from an existing user (id = 2)
+        # and from an nonexistent user (id = 5)
+        dict = {self.id_user: self.assertTrue, '5': self.assertFalse}
+        for key, value in dict.items():
+            try:
+                self.user.objects.get(id=key)
+                data = True
+            except self.user.DoesNotExist:
+                data = False
+            value(data)
