@@ -21,7 +21,7 @@
         <p>Votre adresse e-mail : {{ mail }}</p>
         <form action="{% url 'index' %}" method="post">{% csrf_token %}
           <input type="hidden" name="delete_account" value="True" />
-          <input type="button" onclick="location.href='{% url 'index' %}'" value="Supprimer mon compte"/><br><br>
+          <input type="submit" onclick="location.href='{% url 'index' %}'" value="Supprimer mon compte"/><br><br>
         </form>
       </div>
     </div>

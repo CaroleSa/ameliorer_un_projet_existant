@@ -29,6 +29,17 @@ def index(request):
             context = {'message': "Vous êtes déconnecté."}
             return render(request, 'food/index.html', context)
 
+        # USER'S DEACTIVATION AND DISPLAY THE INDEX PAGE
+        # if the user clicks on the button "supprimer mon compte"
+        delete_account = request.POST.get('delete_account', 'False')
+        if delete_account == 'True':
+            user = request.user
+            logout(request)
+            user.is_active = False
+            user.save()
+            context = {'message': "Votre compte a bien été supprimé."}
+            return render(request, 'food/index.html', context)
+
     # INSERT DATA IF THE DATABASE IS EMPTY
     # DISPLAY THE INDEX PAGE
     try:

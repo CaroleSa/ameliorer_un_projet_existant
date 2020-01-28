@@ -65,7 +65,6 @@ def my_account(request):
     return render(request, 'account/my_account.html', context)
 
 
-
 def create_account(request):
     """ create_account view :
         created the user's account if the information given is correct
