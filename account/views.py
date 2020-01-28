@@ -47,6 +47,12 @@ def access_account(request):
                 error_list.append(message)
                 context["message"] = error_list
                 context["color"] = "red"
+
+            # if the user's account is deactivate
+            user = request.user
+            if user.is_active == False:
+                context["message"] = ["Ce compte n'existe plus."]
+
         else:
             context["message"] = ["Ce compte n'existe pas."]
             context["color"] = "red"
