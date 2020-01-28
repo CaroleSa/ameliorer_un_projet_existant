@@ -19,6 +19,10 @@
         <h3 class="text-black mt-0"> Mes informations :</h3><br>
         <p>Ce compte a été créé le {{ date }}.</p>
         <p>Votre adresse e-mail : {{ mail }}</p>
+        <form action="{% url 'index' %}" method="post">{% csrf_token %}
+          <input type="hidden" name="delete_account" value="True" />
+          <input type="button" onclick="location.href='{% url 'index' %}'" value="Supprimer mon compte"/><br><br>
+        </form>
       </div>
     </div>
   </div>
