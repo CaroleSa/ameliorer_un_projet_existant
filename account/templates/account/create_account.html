@@ -20,11 +20,11 @@
         <form action="{% url 'account:create_account' %}" method="post">{% csrf_token %}
           <label for="{{ form.email.id_for_label }}">{{ form.email }}<br>
           <label for="{{ form.password.id_for_label }}">{{ form.password }}<br>
-          <input class="form-control" placeholder="Confirmer mot de passe" type="password" name="passwordControl" maxlength="8" minlength="8" required><br>
+          <input id="password2" class="form-control" placeholder="Confirmer mot de passe" type="password" name="passwordControl" maxlength="8" minlength="8" required><br>
           {% for elt in message %}
             <p id="{{ color }}">{{ elt }}</p>
           {% endfor %}
-          <input type="submit" value="Valider"><br><br>
+          <input id="submitButton" type="submit" value="Valider"><br><br>
         </form>
         <a href="{% url 'account:access_account' %}"><p class="small">M'identifier</p></a>
       </div>

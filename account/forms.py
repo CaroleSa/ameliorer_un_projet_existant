@@ -18,8 +18,8 @@ class Account(ModelForm):
         model = get_user_model()
         fields = ["email", "password"]
         widgets = {
-            'email': EmailInput(attrs={'class': 'form-control', 'Placeholder': 'Adresse E-mail'}),
-            'password': TextInput(attrs={'class': 'form-control',
+            'email': EmailInput(attrs={'class': 'form-control', 'id': 'mail', 'Placeholder': 'Adresse E-mail'}),
+            'password': TextInput(attrs={'class': 'form-control', 'id': 'password',
                                          'Placeholder': 'Mot de passe à 8 caractères',
                                          'type': 'password', 'maxlength': '8', 'minlength':"8"})
         }
