@@ -80,7 +80,7 @@
             <p>Mes favoris</p>
           </li>
 
-          <li class="nav-item logo">
+          <li class="nav-item logo" id="exitLogoLi">
             <form action="{% url 'index' %}" method="post">{% csrf_token %}
               <input type="hidden" name="disconnection" value="True" />
               <input class="center" type="image" src="{% static 'food/img/logo_exit.png' %}" alt="logo exit" />

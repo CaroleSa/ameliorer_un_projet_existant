@@ -9,7 +9,7 @@
 
 
 {% block content2 %}
-<h2 class="text-white">{{ name }}</h2>
+<h2 class="text-white" id="nameFoodDetail">{{ name }}</h2>
 {% endblock %}
 
 
@@ -31,7 +31,7 @@
         {% elif nutrition_grade == "e" %}
         <a>A B C D<span class="medium">E </span></a>
         {% endif %}
-        <br><br><br><br><a href='{{ link }}' target="_blank"><button id="link">Voir la fiche d'OpenFoodFacts</button></a>
+        <br><br><br><br><a href='{{ link }}' target="_blank" id="link"><button>Voir la fiche d'OpenFoodFacts</button></a>
       </div>
       <div class="col-lg-6 text-left">
         <h4> Repères nutritionnels pour 100g :</h4>
