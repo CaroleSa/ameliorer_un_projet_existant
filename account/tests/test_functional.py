@@ -16,7 +16,7 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(10)
 
-    def tearDown(self):
+    """def tearDown(self):
         self.browser.quit()
 
     def test_search_food(self):
@@ -29,7 +29,7 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         elem.send_keys(Keys.RETURN)
         time.sleep(5)
         # check the url of the recovered page
-        self.assertEqual(self.browser.current_url, self.live_server_url + "/food/result/")
+        self.assertEqual(self.browser.current_url, self.live_server_url + "/food/result/")"""
 
 
 
