@@ -11,7 +11,7 @@
     <h2 class="text-white-75 font-weight-light mb-5">Trouvez un produit de substitution pour ceux que vous consommez tous les jours.</h2>
     <form action="{% url 'food:result' %}" method="post">{% csrf_token %}
       <input type="text" class="js-scroll-trigger" id="productTextarea" placeholder="  Produit" name="search">
-      <input type="submit" onclick="location.href='{% url 'food:result' %}'" value="Chercher"/><br><br>
+      <input type="submit" onclick="location.href='{% url 'food:result' %}'" id="button_search" value="Chercher"/><br><br>
     </form>
   </div>
 {% endblock %}
