@@ -7,7 +7,6 @@
 from selenium import webdriver
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 import time
 
 
@@ -40,8 +39,9 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         self.assertEqual(self.browser.current_url, self.live_server_url + "/account/access_account/")
 
         # test access account with a mail unknown
-        self.browser.find_element_by_id("mail").send_keys("carole@test.fr")
-        self.browser.find_element_by_id("password").send_keys("00000000")
+        dict = {"mail": "carole@test.fr", "password": "00000000"}
+        for key, value in dict.items():
+            self.browser.find_element_by_id(key).send_keys(value)
         self.browser.find_element_by_id("submit").click()
         time.sleep(5)
         # check the value of the error message
@@ -50,9 +50,9 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
 
         # test create account
         self.browser.find_element_by_id("buttonCreateAccount").click()
-        self.browser.find_element_by_id("mail").send_keys("carole@test.fr")
-        self.browser.find_element_by_id("password").send_keys("00000000")
-        self.browser.find_element_by_id("password2").send_keys("00000000")
+        dict = {"mail": "carole@test.fr", "password": "00000000", "password2": "00000000"}
+        for key, value in dict.items():
+            self.browser.find_element_by_id(key).send_keys(value)
         self.browser.find_element_by_id("submitButton").click()
         time.sleep(5)
         # check the url of the recovered page
@@ -64,8 +64,9 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         # test access account with the account created
         self.browser.find_element_by_id("userLogoLi").click()
         time.sleep(5)
-        self.browser.find_element_by_id("mail").send_keys("carole@test.fr")
-        self.browser.find_element_by_id("password").send_keys("00000000")
+        dict = {"mail": "carole@test.fr", "password": "00000000"}
+        for key, value in dict.items():
+            self.browser.find_element_by_id(key).send_keys(value)
         self.browser.find_element_by_id("submit").click()
         time.sleep(5)
         # check the url of the recovered page
@@ -91,7 +92,7 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         name_food_result_page = self.browser.find_element_by_id("nameFood").text
         self.browser.find_element_by_id("floppy").click()
         # check the url of the recovered page
-        self.assertEqual(self.browser.current_url, self.live_server_url + "/account/access_account/")
+        self.assertEqual(self.browser.current_url, self.live_server_url + "/food/result/")
         # check the favorite food is registered
         self.browser.find_element_by_id("carrotLogoLi").click()
         time.sleep(5)
@@ -101,16 +102,42 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         # test delete favorite
         self.browser.find_element_by_id("delete").click()
         # check the url of the recovered page
-        self.assertEqual(self.browser.current_url, self.live_server_url + "/account/access_account/")
+        self.assertEqual(self.browser.current_url, self.live_server_url + "/food/favorites/")
         # check the favorite food is deleted
         name_favorite_food = self.browser.find_element_by_id("nameFood").text
-        self.assertIsNone(name_favorite_food)
+        self.assertEqual(name_favorite_food, "")
 
+        # test disconnection
+        self.browser.find_element_by_id("exitLogoLi").click()
+        time.sleep(5)
+        # check the url of the recovered page
+        self.assertEqual(self.browser.current_url, self.live_server_url + "/")
+        # check the value of the confirmation message
+        confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
+        self.assertEqual(confirmation_message, "Vous êtes déconnecté.")
 
-
-
-        #test suprime et test deconnexion, test suprimer compte et essayer de se reconnecter
-
-
-
-
+        # test delete account
+        self.browser.find_element_by_id("userLogoLi").click()
+        time.sleep(5)
+        dict = {"mail": "carole@test.fr", "password": "00000000"}
+        for key, value in dict.items():
+            self.browser.find_element_by_id(key).send_keys(value)
+        self.browser.find_element_by_id("submit").click()
+        time.sleep(5)
+        self.browser.find_element_by_id("userLogoLi").click()
+        self.browser.find_element_by_id("deleteAccount").click()
+        # check the url of the recovered page
+        self.assertEqual(self.browser.current_url, self.live_server_url + "/")
+        # check the value of the confirmation message
+        confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
+        self.assertEqual(confirmation_message, "Votre compte a bien été supprimé.")
+        self.browser.find_element_by_id("userLogoLi").click()
+        time.sleep(5)
+        dict = {"mail": "carole@test.fr", "password": "00000000"}
+        for key, value in dict.items():
+            self.browser.find_element_by_id(key).send_keys(value)
+        self.browser.find_element_by_id("submit").click()
+        time.sleep(5)
+        # check the value of the error message
+        error_message = self.browser.find_element_by_id("red").text
+        self.assertEqual(error_message, "Ce compte n'existe plus.")
