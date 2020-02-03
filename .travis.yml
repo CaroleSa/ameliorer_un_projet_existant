@@ -20,7 +20,8 @@ before_script:
   - export MOZ_HEADLESS=1
 script:
   - python manage.py migrate
-  - python manage.py test
+  - python manage.py test account
+  - python manage.py test food
 
 branches:
   only:

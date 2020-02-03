@@ -75,19 +75,6 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
         self.assertEqual(confirmation_message, "Bonjour carole@test.fr ! Vous êtes bien connecté.")
 
-        # test access to my account page
-        self.browser.find_element_by_id("userLogoLi").click()
-        time.sleep(5)
-        # check the url of the recovered page
-        self.assertEqual(self.browser.current_url, self.live_server_url + "/account/my_account/")
-        # check the value of the title of the my account page
-        title = self.browser.find_element_by_id("titleMyAccount").text
-        self.assertEqual(title, "Mes informations :")
-        # check the email of the my account page
-        mail_account = self.browser.find_element_by_id("mailAccount").text
-        mail_connection = dict.get("mail")
-        self.assertEqual(mail_account, mail_connection)
-
         # test access favorites if connected
         self.browser.find_element_by_id("carrotLogoLi").click()
         time.sleep(5)
@@ -113,7 +100,8 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         self.assertEqual(name_favorite_food, name_food_result_page)
 
         # test delete favorite
-        self.browser.find_element_by_id("delete").click()
+        self.browser.find_element_by_class_name("delete").click()
+        time.sleep(5)
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/food/favorites/")
         # check the favorite food is deleted
@@ -129,7 +117,7 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
         self.assertEqual(confirmation_message, "Vous êtes déconnecté.")
 
-        # test delete account
+        # test access to my account page
         self.browser.find_element_by_id("userLogoLi").click()
         time.sleep(5)
         dict = {"mail": "carole@test.fr", "password": "00000000"}
@@ -138,12 +126,26 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         self.browser.find_element_by_id("submit").click()
         time.sleep(5)
         self.browser.find_element_by_id("userLogoLi").click()
+        time.sleep(5)
+        # check the url of the recovered page
+        self.assertEqual(self.browser.current_url, self.live_server_url + "/account/my_account/")
+        # check the value of the title of the my account page
+        title = self.browser.find_element_by_id("titleMyAccount").text
+        self.assertEqual(title, "Mes informations :")
+        # check the email of the my account page
+        mail_account = self.browser.find_element_by_id("mailAccount").text
+        mail_connection = dict.get("mail")
+        self.assertEqual(mail_account, "Votre adresse e-mail : " + mail_connection)
+
+        # test delete account
         self.browser.find_element_by_id("deleteAccount").click()
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/")
         # check the value of the confirmation message
         confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
         self.assertEqual(confirmation_message, "Votre compte a bien été supprimé.")
+
+        # test connection with the account deleted
         self.browser.find_element_by_id("userLogoLi").click()
         time.sleep(5)
         dict = {"mail": "carole@test.fr", "password": "00000000"}
