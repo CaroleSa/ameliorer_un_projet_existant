@@ -30,11 +30,17 @@ class TestViews(TestCase):
 
         # try to get the data from an existing user (id = 2)
         # and from an nonexistent user (id = 5)
-        dict = {self.id_user: self.assertTrue, '5': self.assertFalse}
-        for key, value in dict.items():
+        dict_id_method = {self.id_user: self.assertTrue, '5': self.assertFalse}
+        for id_user, method in dict_id_method.items():
             try:
-                self.user.objects.get(id=key)
-                data = True
+                self.user.objects.get(id=id_user)
+                get_user = True
             except self.user.DoesNotExist:
-                data = False
-            value(data)
+                get_user = False
+            method(get_user)
+
+    def test_check_user_deactivate(self):
+        user = self.user.objects.get(id=self.id_user)
+        user.is_active = False
+        user.save()
+        self.assertFalse(user.is_active)
