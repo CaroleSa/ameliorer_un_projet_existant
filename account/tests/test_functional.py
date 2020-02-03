@@ -101,6 +101,7 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
 
         # test delete favorite
         self.browser.find_element_by_id("delete").click()
+        time.sleep(5)
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/food/favorites/")
         # check the favorite food is deleted
