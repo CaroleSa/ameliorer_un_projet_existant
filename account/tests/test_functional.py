@@ -4,155 +4,190 @@
 """ TestUserTakesTheTest class """
 
 # imports
-from selenium import webdriver
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.contrib.auth import get_user_model
+from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time
+from food.models import Food
 
 
 class TestUserTakesTheTest(StaticLiveServerTestCase):
+    """ class TestUserTakesTheTest :
+    test user actions regarding their account """
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(10)
+
+        # CREATE USER ACCOUNT 1
+        self.user = get_user_model()
+        self.dict_data_access_account = {"mail": "carole1@test.fr", "password": "00000000"}
+        self.user_created = \
+            self.user.objects.create_user(username='Null',
+                                          email=self.dict_data_access_account.get('mail'),
+                                          password=self.dict_data_access_account.get('password'))
+
+        # DATA TO CREATE USER ACCOUNT 2
+        self.mail_create_account = "carole2@test.fr"
+        self.dict_data_create_account = {"mail": self.mail_create_account,
+                                         "password": self.dict_data_access_account.get('password'),
+                                         "password2": self.dict_data_access_account.get('password')}
 
     def tearDown(self):
         self.browser.quit()
 
-    def test_user_account(self):
-        # set url
-        self.browser.get(self.live_server_url + "/")
-
-        # test access favorites if no connected
+    def test_access_favorites_logout(self):
+        """ test access to favorites page if the user is not connected """
+        self.browser.get(self.live_server_url + "/account/access_account/")
         self.browser.find_element_by_id("carrotLogoLi").click()
-        time.sleep(5)
+
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/food/favorites/")
         # check the value of the error message
         error_message = self.browser.find_element_by_id("red").text
         self.assertEqual(error_message, "Veuillez vous connecter pour accéder à vos favoris.")
 
-        # test click to account logo
+    def test_login_error(self):
+        """ connection test with an unknown email """
+        self.browser.get(self.live_server_url + "/food/favorites/")
         self.browser.find_element_by_id("userLogoLi").click()
-        time.sleep(5)
-        # check the url of the recovered page
-        self.assertEqual(self.browser.current_url, self.live_server_url + "/account/access_account/")
-
-        # test access account with a mail unknown
-        dict = {"mail": "carole@test.fr", "password": "00000000"}
-        for key, value in dict.items():
+        dict_data_account_unknown = {"mail": "unknown_email@test.fr", "password": "00000000"}
+        for key, value in dict_data_account_unknown.items():
             self.browser.find_element_by_id(key).send_keys(value)
         self.browser.find_element_by_id("submit").click()
-        time.sleep(5)
+
+        # check the url of the recovered page
+        self.assertEqual(self.browser.current_url,
+                         self.live_server_url + "/account/access_account/")
         # check the value of the error message
         error_message = self.browser.find_element_by_id("red").text
         self.assertEqual(error_message, "Ce compte n'existe pas.")
 
-        # test create account
+    def test_create_account(self):
+        """ test create user account """
+        self.browser.get(self.live_server_url + "/account/access_account/")
         self.browser.find_element_by_id("buttonCreateAccount").click()
-        dict = {"mail": "carole@test.fr", "password": "00000000", "password2": "00000000"}
-        for key, value in dict.items():
+        for key, value in self.dict_data_create_account.items():
             self.browser.find_element_by_id(key).send_keys(value)
         self.browser.find_element_by_id("submitButton").click()
-        time.sleep(5)
+
         # check the url of the recovered page
-        self.assertEqual(self.browser.current_url, self.live_server_url + "/account/create_account/")
+        self.assertEqual(self.browser.current_url,
+                         self.live_server_url + "/account/create_account/")
         # check the value of the confirmation message
         confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
-        self.assertEqual(confirmation_message, "Le compte carole@test.fr a bien été créé.")
+        self.assertEqual(confirmation_message,
+                         "Le compte " + self.mail_create_account + " a bien été créé.")
 
-        # test connection to the user's account with the account created
+    def test_login(self):
+        """ test user login """
+        self.browser.get(self.live_server_url + "/account/create_account/")
         self.browser.find_element_by_id("userLogoLi").click()
-        time.sleep(5)
-        dict = {"mail": "carole@test.fr", "password": "00000000"}
-        for key, value in dict.items():
+        for key, value in self.dict_data_access_account.items():
             self.browser.find_element_by_id(key).send_keys(value)
         self.browser.find_element_by_id("submit").click()
-        time.sleep(5)
+
         # check the url of the recovered page
-        self.assertEqual(self.browser.current_url, self.live_server_url + "/account/access_account/")
+        self.assertEqual(self.browser.current_url,
+                         self.live_server_url + "/account/access_account/")
         # check the value of the confirmation message
         confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
-        self.assertEqual(confirmation_message, "Bonjour carole@test.fr ! Vous êtes bien connecté.")
+        self.assertEqual(confirmation_message,
+                         "Bonjour " + self.dict_data_access_account.get('mail')
+                         + " ! Vous êtes bien connecté.")
 
-        # test access favorites if connected
+    def test_access_favorite_page_login(self):
+        """ test access to favorites page if the user is logged """
+        self.test_login()
         self.browser.find_element_by_id("carrotLogoLi").click()
-        time.sleep(5)
+
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/food/favorites/")
         # check the title of the favorites page
         title = self.browser.find_element_by_id("favoritesTitle").text
         self.assertEqual(title, "Mes aliments")
 
-        # test add favorites food
-        elem = self.browser.find_element_by_id("searchTextarea")
-        elem.send_keys("nutella")
-        elem.send_keys(Keys.RETURN)
-        time.sleep(5)
+    def save_favorite_food(self):
+        """ test save favorite food """
+        self.test_login()
+        search_textarea = self.browser.find_element_by_id("searchTextarea")
+        search_textarea.send_keys("nutella")
+        search_textarea.send_keys(Keys.RETURN)
         name_food_result_page = self.browser.find_element_by_id("nameFood").text
         self.browser.find_element_by_id("floppy").click()
+
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/food/result/")
-        # check the favorite food is registered
+        # check that the selected food is present in the favorites page
         self.browser.find_element_by_id("carrotLogoLi").click()
-        time.sleep(5)
         name_favorite_food = self.browser.find_element_by_id("nameFood").text
         self.assertEqual(name_favorite_food, name_food_result_page)
 
-        # test delete favorite
+    def delete_favorite_food(self):
+        """ test delete favorite food """
+        self.test_login()
+        food = Food.objects.get(id=1)
+        user = self.user.objects.get(id=1)
+        food.favorites.add(user)
+        self.browser.find_element_by_id("carrotLogoLi").click()
         self.browser.find_element_by_class_name("delete").click()
-        time.sleep(5)
+
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/food/favorites/")
-        # check the favorite food is deleted
+        # check that the deleted favorite food is not present in the favorites page
         name_favorite_food = self.browser.find_element_by_id("nameFood").text
         self.assertEqual(name_favorite_food, "")
 
-        # test disconnection
+    def test_user_disconnection(self):
+        """ test user disconnection if he clicked to the exit logo """
+        self.test_login()
         self.browser.find_element_by_id("exitLogoLi").click()
-        time.sleep(5)
+
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/")
         # check the value of the confirmation message
         confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
         self.assertEqual(confirmation_message, "Vous êtes déconnecté.")
 
-        # test access to my account page
+    def test_access_my_account_page(self):
+        """ test access to my account page """
+        self.test_login()
         self.browser.find_element_by_id("userLogoLi").click()
-        time.sleep(5)
-        dict = {"mail": "carole@test.fr", "password": "00000000"}
-        for key, value in dict.items():
-            self.browser.find_element_by_id(key).send_keys(value)
-        self.browser.find_element_by_id("submit").click()
-        time.sleep(5)
-        self.browser.find_element_by_id("userLogoLi").click()
-        time.sleep(5)
+
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/account/my_account/")
         # check the value of the title of the my account page
         title = self.browser.find_element_by_id("titleMyAccount").text
         self.assertEqual(title, "Mes informations :")
-        # check the email of the my account page
+        # check that the email of the my account page is the same that connection email
         mail_account = self.browser.find_element_by_id("mailAccount").text
-        mail_connection = dict.get("mail")
-        self.assertEqual(mail_account, "Votre adresse e-mail : " + mail_connection)
+        self.assertEqual(mail_account, "Votre adresse e-mail : "
+                         + self.dict_data_access_account.get('mail'))
 
-        # test delete account
+    def test_delete_account(self):
+        """ test delete user account """
+        self.test_login()
+        self.browser.find_element_by_id("userLogoLi").click()
         self.browser.find_element_by_id("deleteAccount").click()
+
         # check the url of the recovered page
         self.assertEqual(self.browser.current_url, self.live_server_url + "/")
         # check the value of the confirmation message
         confirmation_message = self.browser.find_element_by_id("confirmationMessage").text
         self.assertEqual(confirmation_message, "Votre compte a bien été supprimé.")
 
-        # test connection with the account deleted
-        self.browser.find_element_by_id("userLogoLi").click()
-        time.sleep(5)
-        dict = {"mail": "carole@test.fr", "password": "00000000"}
-        for key, value in dict.items():
+    def test_login_account_deleted(self):
+        """ test login with account deleted """
+        self.user = self.user_created
+        self.user.is_active = False
+        self.user.save()
+        self.browser.get(self.live_server_url + "/account/access_account/")
+        for key, value in self.dict_data_access_account.items():
             self.browser.find_element_by_id(key).send_keys(value)
         self.browser.find_element_by_id("submit").click()
-        time.sleep(5)
+
+        # check the url of the recovered page
+        self.assertEqual(self.browser.current_url, self.live_server_url
+                         + "/account/access_account/")
         # check the value of the error message
         error_message = self.browser.find_element_by_id("red").text
         self.assertEqual(error_message, "Ce compte n'existe plus.")
