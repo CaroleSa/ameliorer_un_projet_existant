@@ -4,6 +4,7 @@
 """ TestUserTakesTheTest class """
 
 # imports
+import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth import get_user_model
 from selenium import webdriver
@@ -14,6 +15,8 @@ from food.models import Food
 class TestUserTakesTheTest(StaticLiveServerTestCase):
     """ class TestUserTakesTheTest :
     test user actions regarding their account """
+
+    fixtures = ["data_food.json", "data_categorie.json"]
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -106,12 +109,13 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         title = self.browser.find_element_by_id("favoritesTitle").text
         self.assertEqual(title, "Mes aliments")
 
-    def save_favorite_food(self):
+    def test_save_favorite_food(self):
         """ test save favorite food """
         self.test_login()
         search_textarea = self.browser.find_element_by_id("searchTextarea")
         search_textarea.send_keys("nutella")
         search_textarea.send_keys(Keys.RETURN)
+        time.sleep(5)
         name_food_result_page = self.browser.find_element_by_id("nameFood").text
         self.browser.find_element_by_id("floppy").click()
 
@@ -122,11 +126,11 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
         name_favorite_food = self.browser.find_element_by_id("nameFood").text
         self.assertEqual(name_favorite_food, name_food_result_page)
 
-    def delete_favorite_food(self):
+    def test_delete_favorite_food(self):
         """ test delete favorite food """
         self.test_login()
         food = Food.objects.get(id=1)
-        user = self.user.objects.get(id=1)
+        user = self.user.objects.get(email=self.dict_data_access_account.get('mail'))
         food.favorites.add(user)
         self.browser.find_element_by_id("carrotLogoLi").click()
         self.browser.find_element_by_class_name("delete").click()

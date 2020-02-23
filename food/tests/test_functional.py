@@ -14,6 +14,8 @@ class TestUserTakesTheTest(StaticLiveServerTestCase):
     """ class TestUserTakesTheTest :
     test the user's food search """
 
+    fixtures = ["data_food.json", "data_categorie.json"]
+
     def setUp(self):
         self.browser = webdriver.Firefox()
 
